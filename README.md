@@ -1,5 +1,4 @@
-# Battaglia-navale
-Relazione tecnica
+# Relazione tecnica
 Implementazione del gioco della battaglia navale in linguaggio C++.
 A cura di Francesco Pio Bonometti e Filippo Compri.
 

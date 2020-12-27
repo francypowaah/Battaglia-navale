@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+using namespace std;
 
 struct recColpo
 {
@@ -20,6 +22,8 @@ class Colpo
 		~Colpo();
 		void push(recColpo hit);
 		recColpo pop();
+		void stampaCoda();
+		unsigned int getLunghezza();
 };
 
 Colpo::Colpo()
@@ -54,7 +58,7 @@ void Colpo::push(recColpo hit)
 			++ultimo;
 			if (ultimo >= dim)
 				ultimo = 0;
-			++lunghezza;
+			lunghezza++;
 		}
 	}
 }
@@ -72,5 +76,19 @@ recColpo Colpo::pop()
 				primo = 0;
 			return elementoEstratto;
 		}
+	}
+}
+unsigned int Colpo::getLunghezza()
+{
+	return lunghezza;
+}
+void Colpo::stampaCoda()
+{
+	cout<<"Coordinate dei colpi: "<<endl;
+	for (int i = 0; i < lunghezza; i++)
+	{
+		cout<<" Colpo numero "<<i + 1<<":"<<endl;
+		cout<<"  Coordinata x: "<<colpi[i].indiceRiga<<endl;
+		cout<<"  Coordinata y: "<<colpi[i].indiceColonna<<endl;
 	}
 }

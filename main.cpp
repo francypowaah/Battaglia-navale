@@ -4,6 +4,7 @@ Battaglia navale
 */
 const unsigned int n_elementi{5};	// Dichiarazione con lista di inizializzazione della costante globale n_elementi.
 const unsigned int n_navi{3};		// Sono consentite navi grandi al massimo tre elementi.
+bool noAffondate{true};
 
 #include <iostream>
 #include <ctime>
@@ -104,17 +105,29 @@ void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[]
 		cercaNave(colpoEstratto, counter, campo);
 	}
 }
+void contatoreNavi(unsigned int num, int idx)
+{
+	bool check{true};
+	int j{0};
+	while (check)
+	{
+		j+=idx + 1;
+		if (j <= num)
+		{
+			cout<<"Nave da "<<idx + 1<<" affondata!"<<endl;
+			noAffondate = false;
+		}
+		if (j >= num)
+			check = false;
+	}
+}
 void stampaEsito(unsigned int counter[])
 {
-	bool noAffondate{true};
 	cout<<"o---o---o---o---o---o"<<endl;
 	for (int i = 0; i < n_navi; i++)
 	{
-		if (counter[i] == i + 1)
-		{
-			cout<<"Nave da "<<i + 1<<" affondata!"<<endl;
-			noAffondate = false;
-		}	
+		cout<<"Counter["<<i<<"]:"<<counter[i]<<endl;
+		contatoreNavi(counter[i], i);
 	}
 	if (noAffondate)
 			cout<<"Peccato, nessuna nave e' stata affondata."<<endl;

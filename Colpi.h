@@ -53,9 +53,9 @@ void Colpo::push(recColpo hit)
 	{
 		if ((hit.indiceColonna > 0 && hit.indiceColonna <= n_elementi) && (hit.indiceRiga > 0 && hit.indiceRiga <= n_elementi))
 		{
-			colpi[ultimo].indiceColonna = hit.indiceColonna;
-			colpi[ultimo].indiceRiga = hit.indiceRiga;
-			++ultimo;
+			colpi[ultimo].indiceColonna = hit.indiceColonna - 1;	// Sottraggo una unità perchè gli indici della matrice partono da zero.
+			colpi[ultimo].indiceRiga = hit.indiceRiga - 1;	// Sottraggo una unità perchè gli indici della matrice partono da zero.
+			ultimo++;
 			if (ultimo >= dim)
 				ultimo = 0;
 			lunghezza++;
@@ -67,11 +67,11 @@ recColpo Colpo::pop()
 	recColpo elementoEstratto;
 	if (lunghezza > 0)
 	{
-		if ((colpi[primo].indiceColonna > 0 && colpi[primo].indiceColonna <= n_elementi) && (colpi[primo].indiceRiga > 0 && colpi[primo].indiceRiga <= n_elementi))
+		if ((colpi[primo].indiceColonna >= 0 && colpi[primo].indiceColonna < n_elementi) && (colpi[primo].indiceRiga >= 0 && colpi[primo].indiceRiga < n_elementi))
 		{
-			--lunghezza;
+			lunghezza--;
 			elementoEstratto = colpi[primo];
-			++primo;
+			primo++;
 			if (primo >= dim)
 				primo = 0;
 			return elementoEstratto;
@@ -88,7 +88,7 @@ void Colpo::stampaCoda()
 	for (int i = 0; i < lunghezza; i++)
 	{
 		cout<<" Colpo numero "<<i + 1<<":"<<endl;
-		cout<<"  Coordinata x: "<<colpi[i].indiceRiga<<endl;
-		cout<<"  Coordinata y: "<<colpi[i].indiceColonna<<endl;
+		cout<<"  Indice riga: "<<colpi[i].indiceRiga<<endl;
+		cout<<"  Indice colonna: "<<colpi[i].indiceColonna<<endl;
 	}
 }

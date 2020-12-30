@@ -3,7 +3,7 @@ Bonometti Francesco Pio e Filippo Compri
 Battaglia navale
 */
 const unsigned int n_elementi{5};	// Dichiarazione con lista di inizializzazione della costante globale n_elementi.
-bool noAffondate = true;
+const unsigned int n_navi{3};		// Sono consentite navi grandi al massimo tre elementi.
 
 #include <iostream>
 #include <ctime>
@@ -39,25 +39,27 @@ int leggiDalFile(unsigned int m[][n_elementi])
 }
 void stampaMatrice(unsigned int m[][n_elementi])
 {
-	cout<<"Campo di battaglia: "<<endl;
+	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"Campo di battaglia "<<endl;
+	cout<<"o---o---o---o---o---o"<<endl;
 	cout<<"    ";
 	//for (char i = 65; i < (65 + n_elementi); i++) 	Stampa delle lettere
-	for (int i = 0; i < n_elementi; i++)
+	for (int i = 0; i < n_elementi; i++)	// Stampa degli indici di colonna.
 	{
 		cout<<i + 1<<" ";
 	}
 	cout<<endl<<"  # ";
-	for (int i = 0; i < n_elementi; i++)
+	for (int i = 0; i < n_elementi; i++)	// Stampa dei caratteri separatori #.
 	{
 		cout<<"# ";
 	}
 	cout<<endl;
-	for (int i = 0; i < n_elementi; i++)
+	for (int i = 0; i < n_elementi; i++)	
 	{
-		cout<<i + 1<<" # ";
+		cout<<i + 1<<" # ";					// Stampa degli indici di riga.
 		for (int j = 0; j < n_elementi; j++)
 		{
-			cout<<m[i][j]<<" ";
+			cout<<m[i][j]<<" ";				// Stampa della matrice.
 		}
 		cout<<endl;
 	}
@@ -66,55 +68,69 @@ void chiediColpi(Colpo &arrayColpi)
 {
 	string coords;
 	recColpo colpoEseguito;
-	while (coords[0] != '0')
+	cout<<"o---o---o---o---o---o"<<endl;
+	while (coords[0] != 'q' and coords[0] != 'Q')	// Il carattere q termina il ciclo di inserimento.
 	{
 		cout<<"Inserisci le coordinate, separate da un ';': ";
 		cin>>coords;
-		colpoEseguito.indiceColonna = coords[0] - 48;	// Differenza Ascii.
-		colpoEseguito.indiceRiga = coords[2] - 48; 		// Differenza Ascii.
+		colpoEseguito.indiceRiga = coords[0] - 48;
+		colpoEseguito.indiceColonna = coords[2] - 48;
 		arrayColpi.push(colpoEseguito);		// Invocazione del metodo push sull'oggetto arrayColpi.
 	}
+	cout<<"o---o---o---o---o---o"<<endl;
 }
-void cercaNavi(recColpo colpo, unsigned int campo[][n_elementi], unsigned int counter[])
+void stampaEstratto(recColpo hit)
 {
-	unsigned int numeroLetto{campo[colpo.indiceRiga][colpo.indiceColonna]};
-	if (numeroLetto != 0)
-		counter[numeroLetto - 1]++;
-	
+	cout<<"Colpo estratto: "<<endl;
+	cout<<" Indice riga: "<<hit.indiceRiga<<endl;
+	cout<<" Indice colonna: "<<hit.indiceColonna<<endl;
 }
-void estraiColpi(Colpo &arrayColpi, unsigned int m[][n_elementi], unsigned int counterNavi[])
+void cercaNave(recColpo hit, unsigned int c_navi[], unsigned int campo_battaglia[][n_elementi])
+{
+	unsigned int elementoMatrice{campo_battaglia[hit.indiceRiga][hit.indiceColonna]};
+	cout<<"Ho estratto dalla matrice il numero "<<elementoMatrice<<endl;
+	if (elementoMatrice != 0)
+		c_navi[elementoMatrice - 1]++;
+}
+void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[][n_elementi])
 {
 	recColpo colpoEstratto;
-	for (int i = 0; i < arrayColpi.getLunghezza(); i++)
+	cout<<"o---o---o---o---o---o"<<endl;
+	const unsigned int length = arrayColpi.getLunghezza();	// Memorizzo la lunghezza in una costante, perchè con le pop la lunghezza effettiva si ridurrà.
+	for (int i = 0; i < length; i++)
 	{
 		colpoEstratto = arrayColpi.pop();
-		cercaNavi(colpoEstratto, m, counterNavi);
+		stampaEstratto(colpoEstratto);
+		cercaNave(colpoEstratto, counter, campo);
 	}
 }
-void confrontoColpi(unsigned int counter[])
+void stampaEsito(unsigned int counter[])
 {
-	for (int i = 0; i < 3; i++)
+	bool noAffondate{true};
+	cout<<"o---o---o---o---o---o"<<endl;
+	for (int i = 0; i < n_navi; i++)
 	{
-		if (counter[i] % (i + 1) == 0)
+		if (counter[i] == i + 1)
 		{
-			noAffondate = false;
 			cout<<"Nave da "<<i + 1<<" affondata!"<<endl;
-		}
+			noAffondate = false;
+		}	
 	}
 	if (noAffondate)
-		cout<<"Peccato! Nessuna nave e' stata colpita!"<<endl;
+			cout<<"Peccato, nessuna nave e' stata affondata."<<endl;
+	cout<<"o---o Developed by Bonometti Francesco Pio & Compri Filippo o---o"<<endl;
 }
 
 int main()
 {
-	unsigned int matrice[n_elementi][n_elementi] = {{0}}, contaNavi[3] = {0};
+	unsigned int matrice[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
 	Colpo colpi(n_elementi * n_elementi);
 	leggiDalFile(matrice);
 	stampaMatrice(matrice);
 	chiediColpi(colpi);
 	colpi.stampaCoda();
-	estraiColpi(colpi, matrice, contaNavi);
-	confrontoColpi(contaNavi);
+	estraiColpi(colpi, contaNavi, matrice);
+	stampaEsito(contaNavi);
 	return 0;
 }
 

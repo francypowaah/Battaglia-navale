@@ -2,8 +2,9 @@
 Bonometti Francesco Pio e Filippo Compri
 Battaglia navale
 */
-const unsigned int n_elementi{5};	// Dichiarazione con lista di inizializzazione della costante globale n_elementi.
-const unsigned int n_navi{3};		// Sono consentite navi grandi al massimo tre elementi.
+const unsigned int n_elementi{10};	// Dichiarazione con lista di inizializzazione della costante globale n_elementi.
+const unsigned int n_navi{5};		// Sono consentite navi grandi al massimo tre elementi.
+const unsigned int max_len{5};		// Dimensione massima della stringa coords.
 bool noAffondate{true};
 
 #include <iostream>
@@ -43,13 +44,13 @@ void stampaMatrice(unsigned int m[][n_elementi])
 	cout<<"o---o---o---o---o---o"<<endl;
 	cout<<"Campo di battaglia "<<endl;
 	cout<<"o---o---o---o---o---o"<<endl;
-	cout<<"    ";
-	//for (char i = 65; i < (65 + n_elementi); i++) 	Stampa delle lettere
-	for (int i = 0; i < n_elementi; i++)	// Stampa degli indici di colonna.
+	cout<<"     ";
+	for (char i = 65; i < 65 + n_elementi; i++)
+	//for (int i = 0; i < n_elementi; i++)
 	{
-		cout<<i + 1<<" ";
+		cout<<i<<" ";
 	}
-	cout<<endl<<"  # ";
+	cout<<endl<<"   # ";
 	for (int i = 0; i < n_elementi; i++)	// Stampa dei caratteri separatori #.
 	{
 		cout<<"# ";
@@ -57,7 +58,11 @@ void stampaMatrice(unsigned int m[][n_elementi])
 	cout<<endl;
 	for (int i = 0; i < n_elementi; i++)	
 	{
-		cout<<i + 1<<" # ";					// Stampa degli indici di riga.
+		if (i != (n_elementi - 1))
+			cout<<i + 1<<"  # ";					// Stampa degli indici di riga.
+		else
+			cout<<i + 1<<" # ";
+		
 		for (int j = 0; j < n_elementi; j++)
 		{
 			cout<<m[i][j]<<" ";				// Stampa della matrice.
@@ -65,18 +70,46 @@ void stampaMatrice(unsigned int m[][n_elementi])
 		cout<<endl;
 	}
 }
+void estraiElemento(char stringa_in[], char stringa_out[])
+{
+	int i{0}, j{0}, k{0};
+	for (i = 0; stringa_in[i] != '\0' && stringa_in[i] != ';' && j < max_len; i++);
+	for (j = 0; j < i; j++)
+		stringa_out[j] = stringa_in[j];
+	stringa_out[j] = '\0';
+	for (j = i + 1; stringa_in[j] != '\0' && stringa_in[j] != ';' && j < max_len; j++)
+	{
+		stringa_in[k] = stringa_in[j];
+		k++;
+	}
+}
+
 void chiediColpi(Colpo &arrayColpi)
 {
-	string coords;
+	char coords[max_len] = {'\0'}, element[max_len] = {'\0'};
+	bool prosegui{true};
 	recColpo colpoEseguito;
 	cout<<"o---o---o---o---o---o"<<endl;
-	while (coords[0] != 'q' and coords[0] != 'Q')	// Il carattere q termina il ciclo di inserimento.
+	while (prosegui)
 	{
 		cout<<"Inserisci le coordinate, separate da un ';': ";
 		cin>>coords;
-		colpoEseguito.indiceRiga = coords[0] - 48;
-		colpoEseguito.indiceColonna = coords[2] - 48;
-		arrayColpi.push(colpoEseguito);		// Invocazione del metodo push sull'oggetto arrayColpi.
+		if (coords[0] == 'q' or coords[0] == 'Q')
+		{
+			prosegui = false;	// Il carattere q termina il ciclo di inserimento.
+		}
+		else
+		{
+			estraiElemento(coords, element);
+			//colpoEseguito.indiceRiga = atoi(element);
+			colpoEseguito.indiceColonna = element[0] - 64;	// Conversione della lettera da Ascii a int.
+			estraiElemento(coords, element);
+			colpoEseguito.indiceRiga = atoi(element);
+			//cout<<"Indice colonna: "<<colpoEseguito.indiceColonna<<endl;
+			//cout<<"Indice riga: "<<colpoEseguito.indiceRiga<<endl;
+			arrayColpi.push(colpoEseguito);		// Invocazione del metodo push sull'oggetto arrayColpi.
+		}
+		
 	}
 	cout<<"o---o---o---o---o---o"<<endl;
 }
@@ -133,16 +166,16 @@ void stampaEsito(unsigned int counter[])
 			cout<<"Peccato, nessuna nave e' stata affondata."<<endl;
 	cout<<"o---o Developed by Bonometti Francesco Pio & Compri Filippo o---o"<<endl;
 }
-
 int main()
 {
-	unsigned int matrice[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
+	
+	unsigned int matrice_pc[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
 	Colpo colpi(n_elementi * n_elementi);
-	leggiDalFile(matrice);
-	stampaMatrice(matrice);
+	leggiDalFile(matrice_pc);
+	stampaMatrice(matrice_pc);
 	chiediColpi(colpi);
 	colpi.stampaCoda();
-	estraiColpi(colpi, contaNavi, matrice);
+	estraiColpi(colpi, contaNavi, matrice_pc);
 	stampaEsito(contaNavi);
 	return 0;
 }

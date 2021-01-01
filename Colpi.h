@@ -82,6 +82,7 @@ unsigned int Colpo::getLunghezza()
 {
 	return lunghezza;
 }
+// Metodo di test, da eliminare.
 void Colpo::stampaCoda()
 {
 	cout<<"Coordinate dei colpi: "<<endl;

@@ -45,10 +45,10 @@ void stampaMatrice(unsigned int m[][n_elementi])
 	cout<<"Campo di battaglia "<<endl;
 	cout<<"o---o---o---o---o---o---o"<<endl;
 	cout<<"     ";
-	for (char i = 65; i < 65 + n_elementi; i++)
+	for (char i = 65; i < 65 + n_elementi; i++)	// Stampa degli indici di colonna.
 		cout<<i<<" ";
 	cout<<endl<<"   # ";
-	for (int i = 0; i < n_elementi; i++)	// Stampa dei caratteri separatori #.
+	for (int i = 0; i < n_elementi; i++) // Stampa dei caratteri separatori #.
 	{
 		cout<<"# ";
 	}
@@ -56,18 +56,18 @@ void stampaMatrice(unsigned int m[][n_elementi])
 	for (int i = 0; i < n_elementi; i++)	
 	{
 		if (i != (n_elementi - 1))
-			cout<<i + 1<<"  # ";					// Stampa degli indici di riga.
+			cout<<i + 1<<"  # "; // Stampa degli indici di riga.
 		else
 			cout<<i + 1<<" # ";
 		
 		for (int j = 0; j < n_elementi; j++)
 		{
-			cout<<m[i][j]<<" ";				// Stampa della matrice.
+			cout<<m[i][j]<<" "; // Stampa della matrice.
 		}
 		cout<<endl;
 	}
 }
-void estraiElemento(char stringa_in[], char stringa_out[])
+void estraiElemento(char stringa_in[], char stringa_out[]) // Estrazione degli indici di riga e colonna inseriti dall'utente.
 {
 	int i{0}, j{0}, k{0};
 	for (i = 0; stringa_in[i] != '\0' && stringa_in[i] != ';' && i < max_len; i++);
@@ -80,8 +80,7 @@ void estraiElemento(char stringa_in[], char stringa_out[])
 		k++;
 	}
 }
-
-void chiediColpi(Colpo &arrayColpi)	// Non funziona con J;10
+void chiediColpi(Colpo &arrayColpi)
 {
 	char coords[max_len] = {'\0'}, element[max_len] = {'\0'};
 	bool prosegui{true};
@@ -93,37 +92,37 @@ void chiediColpi(Colpo &arrayColpi)	// Non funziona con J;10
 		cin>>coords;
 		if (coords[0] == 'q' or coords[0] == 'Q')
 		{
-			prosegui = false;	// Il carattere q termina il ciclo di inserimento.
+			prosegui = false; // Il carattere q termina il ciclo di inserimento.
 		}
 		else
 		{
 			estraiElemento(coords, element);
-			colpoEseguito.indiceColonna = element[0] - 64;	// Conversione della lettera da Ascii a int.
+			colpoEseguito.indiceColonna = element[0] - 64; // Conversione della lettera da Ascii a int.
 			estraiElemento(coords, element);
 			colpoEseguito.indiceRiga = atoi(element);
-			arrayColpi.push(colpoEseguito);		// Invocazione del metodo push sull'oggetto arrayColpi.
+			arrayColpi.push(colpoEseguito);	// Invocazione del metodo push sull'oggetto arrayColpi, secondo la logica della coda.
 		}
 	}
 	cout<<"o---o---o---o---o---o---o"<<endl;
 }
-void stampaEstratto(recColpo hit)
+void stampaEstratto(recColpo hit) // Stampa del colpo estratto dalla coda mediante invocazione del metodo pop.
 {
 	cout<<"Colpo estratto: "<<endl;
 	cout<<" Indice riga: "<<hit.indiceRiga<<endl;
 	cout<<" Indice colonna: "<<hit.indiceColonna<<endl;
 }
-void cercaNave(recColpo hit, unsigned int c_navi[], unsigned int campo_battaglia[][n_elementi])
+void cercaNave(recColpo hit, unsigned int c_navi[], unsigned int campo_battaglia[][n_elementi])	// Funzione di ricerca della nave.
 {
 	unsigned int elementoMatrice{campo_battaglia[hit.indiceRiga][hit.indiceColonna]};
 	cout<<"Ho estratto dalla matrice il numero "<<elementoMatrice<<endl;
 	if (elementoMatrice != 0)
 		c_navi[elementoMatrice - 1]++;
 }
-void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[][n_elementi])
+void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[][n_elementi]) // Funzione di estrazione dei colpi dalla coda.
 {
 	recColpo colpoEstratto;
 	cout<<"o---o---o---o---o---o---o"<<endl;
-	const unsigned int length = arrayColpi.getLunghezza();	// Memorizzo la lunghezza in una costante, perchè con le pop la lunghezza effettiva si ridurrà.
+	const unsigned int length = arrayColpi.getLunghezza(); // Memorizzo la lunghezza in una costante, perchè con le pop la lunghezza effettiva si ridurrà.
 	for (int i = 0; i < length; i++)
 	{
 		colpoEstratto = arrayColpi.pop();
@@ -131,7 +130,7 @@ void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[]
 		cercaNave(colpoEstratto, counter, campo);
 	}
 }
-void contatoreNavi(unsigned int num, int idx)
+void contatoreNavi(unsigned int num, int idx) // Contatore delle navi affondate (ricerca dei multipli di un numero ottimizzata nei tempi).
 {
 	bool check{true};
 	int j{0};
@@ -147,7 +146,7 @@ void contatoreNavi(unsigned int num, int idx)
 			check = false;
 	}
 }
-void stampaEsito(unsigned int counter[])
+void stampaEsito(unsigned int counter[]) // Funzione di stampa delle navi affondate.
 {
 	cout<<"o---o---o---o---o---o---o"<<endl;
 	for (int i = 0; i < n_navi; i++)
@@ -159,6 +158,7 @@ void stampaEsito(unsigned int counter[])
 			cout<<"Peccato, nessuna nave e' stata affondata."<<endl;
 	cout<<"o---o Developed by Bonometti Francesco Pio & Compri Filippo o---o"<<endl;
 }
+
 int main()
 {
 	
@@ -172,17 +172,18 @@ int main()
 			break;
 		case -1:
 			cout<<"Si e' verificato un errore nell'apertura del file."<<endl;
+			print = false;
 			break;
 		case -2:
 			cout<<"Il numero di dati presenti sul file non e' sufficiente a riempire la plancia di gioco."<<endl;
 			print = false;
 			break;
 	}
-	if (print)stampaMatrice(matrice_pc);
-	chiediColpi(colpi);
-	colpi.stampaCoda();
-	estraiColpi(colpi, contaNavi, matrice_pc);
-	stampaEsito(contaNavi);
+	if (print)stampaMatrice(matrice_pc); // La matrice viene stampata solamente se la lettura è eseguita correttamente.
+	chiediColpi(colpi);	// Funzione d'inserimento delle coordinate dei colpi da parte dell'utente.
+	colpi.stampaCoda();	// Metodo di test: stampa della coda dei colpi.
+	estraiColpi(colpi, contaNavi, matrice_pc);	// Funzione d'estrazione dei colpi dalla coda.
+	stampaEsito(contaNavi);	// Stampa delle navi affondate.
 	return 0;
 }
 

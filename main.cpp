@@ -41,15 +41,12 @@ int leggiDalFile(unsigned int m[][n_elementi])
 }
 void stampaMatrice(unsigned int m[][n_elementi])
 {
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 	cout<<"Campo di battaglia "<<endl;
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 	cout<<"     ";
 	for (char i = 65; i < 65 + n_elementi; i++)
-	//for (int i = 0; i < n_elementi; i++)
-	{
 		cout<<i<<" ";
-	}
 	cout<<endl<<"   # ";
 	for (int i = 0; i < n_elementi; i++)	// Stampa dei caratteri separatori #.
 	{
@@ -73,23 +70,23 @@ void stampaMatrice(unsigned int m[][n_elementi])
 void estraiElemento(char stringa_in[], char stringa_out[])
 {
 	int i{0}, j{0}, k{0};
-	for (i = 0; stringa_in[i] != '\0' && stringa_in[i] != ';' && j < max_len; i++);
+	for (i = 0; stringa_in[i] != '\0' && stringa_in[i] != ';' && i < max_len; i++);
 	for (j = 0; j < i; j++)
 		stringa_out[j] = stringa_in[j];
 	stringa_out[j] = '\0';
-	for (j = i + 1; stringa_in[j] != '\0' && stringa_in[j] != ';' && j < max_len; j++)
+	for (j = i + 1; j < max_len; j++)
 	{
 		stringa_in[k] = stringa_in[j];
 		k++;
 	}
 }
 
-void chiediColpi(Colpo &arrayColpi)
+void chiediColpi(Colpo &arrayColpi)	// Non funziona con J;10
 {
 	char coords[max_len] = {'\0'}, element[max_len] = {'\0'};
 	bool prosegui{true};
 	recColpo colpoEseguito;
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 	while (prosegui)
 	{
 		cout<<"Inserisci le coordinate, separate da un ';': ";
@@ -101,17 +98,13 @@ void chiediColpi(Colpo &arrayColpi)
 		else
 		{
 			estraiElemento(coords, element);
-			//colpoEseguito.indiceRiga = atoi(element);
 			colpoEseguito.indiceColonna = element[0] - 64;	// Conversione della lettera da Ascii a int.
 			estraiElemento(coords, element);
 			colpoEseguito.indiceRiga = atoi(element);
-			//cout<<"Indice colonna: "<<colpoEseguito.indiceColonna<<endl;
-			//cout<<"Indice riga: "<<colpoEseguito.indiceRiga<<endl;
 			arrayColpi.push(colpoEseguito);		// Invocazione del metodo push sull'oggetto arrayColpi.
 		}
-		
 	}
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 }
 void stampaEstratto(recColpo hit)
 {
@@ -129,7 +122,7 @@ void cercaNave(recColpo hit, unsigned int c_navi[], unsigned int campo_battaglia
 void estraiColpi(Colpo &arrayColpi, unsigned int counter[], unsigned int campo[][n_elementi])
 {
 	recColpo colpoEstratto;
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 	const unsigned int length = arrayColpi.getLunghezza();	// Memorizzo la lunghezza in una costante, perchè con le pop la lunghezza effettiva si ridurrà.
 	for (int i = 0; i < length; i++)
 	{
@@ -156,7 +149,7 @@ void contatoreNavi(unsigned int num, int idx)
 }
 void stampaEsito(unsigned int counter[])
 {
-	cout<<"o---o---o---o---o---o"<<endl;
+	cout<<"o---o---o---o---o---o---o"<<endl;
 	for (int i = 0; i < n_navi; i++)
 	{
 		cout<<"Counter["<<i<<"]:"<<counter[i]<<endl;
@@ -170,9 +163,22 @@ int main()
 {
 	
 	unsigned int matrice_pc[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
+	bool print{true};	// Variabile booleana per determinare la stampa della matrice o meno, in presenza di numero insufficiente di dati.
 	Colpo colpi(n_elementi * n_elementi);
-	leggiDalFile(matrice_pc);
-	stampaMatrice(matrice_pc);
+	switch(leggiDalFile(matrice_pc))
+	{
+		case 0:
+			cout<<"Lettura del file eseguita con successo!"<<endl;
+			break;
+		case -1:
+			cout<<"Si e' verificato un errore nell'apertura del file."<<endl;
+			break;
+		case -2:
+			cout<<"Il numero di dati presenti sul file non e' sufficiente a riempire la plancia di gioco."<<endl;
+			print = false;
+			break;
+	}
+	if (print)stampaMatrice(matrice_pc);
 	chiediColpi(colpi);
 	colpi.stampaCoda();
 	estraiColpi(colpi, contaNavi, matrice_pc);

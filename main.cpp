@@ -3,8 +3,9 @@ Bonometti Francesco Pio e Filippo Compri
 Battaglia navale
 */
 const unsigned int n_elementi{10};	// Dichiarazione con lista di inizializzazione della costante globale n_elementi.
-const unsigned int n_navi{5};		// Sono consentite navi grandi al massimo tre elementi.
+const unsigned int dim_navi{5};		// Sono consentite navi grandi al massimo tre elementi.
 const unsigned int max_len{5};		// Dimensione massima della stringa coords.
+const unsigned int n_navi{5};		// Numero di navi disposte sulla plancia di gioco.
 bool noAffondate{true};
 
 #include <iostream>
@@ -39,6 +40,35 @@ int leggiDalFile(unsigned int m[][n_elementi])
 	fileCampo.close();
 	return 0;
 }
+void generaMatrice(unsigned int m[][n_elementi])
+{
+	unsigned int col{0}, row{0}, dim_nave{0};
+	unsigned int lim{n_elementi - dim_navi};
+	bool orientamento{true};	// Se true, la nave è posta in orizzontale, se false la nave è posta in verticale.
+	for (int i = 0; i < n_navi; i++)
+	{
+		col = rand()%lim;
+		row = rand()%lim;
+		dim_nave = rand()%dim_navi + 1;
+		for (int j = 0; j < dim_nave; j++)
+		{
+			if (orientamento)
+			{
+				m[row][col] = dim_nave;
+				row--;
+			}
+			else
+			{
+				m[row][col] = dim_nave;
+				col++;
+			}
+		}
+		if (orientamento)
+			orientamento = false;
+		else
+			orientamento = true;
+	}
+}
 void stampaMatrice(unsigned int m[][n_elementi])
 {
 	cout<<"o---o---o---o---o---o---o"<<endl;
@@ -55,7 +85,7 @@ void stampaMatrice(unsigned int m[][n_elementi])
 	cout<<endl;
 	for (int i = 0; i < n_elementi; i++)	
 	{
-		if (i != (n_elementi - 1))
+		if (i < 9)
 			cout<<i + 1<<"  # "; // Stampa degli indici di riga.
 		else
 			cout<<i + 1<<" # ";
@@ -149,7 +179,7 @@ void contatoreNavi(unsigned int num, int idx) // Contatore delle navi affondate 
 void stampaEsito(unsigned int counter[]) // Funzione di stampa delle navi affondate.
 {
 	cout<<"o---o---o---o---o---o---o"<<endl;
-	for (int i = 0; i < n_navi; i++)
+	for (int i = 0; i < dim_navi; i++)
 	{
 		cout<<"Counter["<<i<<"]:"<<counter[i]<<endl;
 		contatoreNavi(counter[i], i);
@@ -161,10 +191,11 @@ void stampaEsito(unsigned int counter[]) // Funzione di stampa delle navi affond
 
 int main()
 {
-	
 	unsigned int matrice_pc[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
-	bool print{true};	// Variabile booleana per determinare la stampa della matrice o meno, in presenza di numero insufficiente di dati.
+	bool avanza{true};	// Variabile booleana per determinare l'avanzamento o meno nel programma, in presenza di numero insufficiente di dati.
 	Colpo colpi(n_elementi * n_elementi);
+	srand(time(NULL));
+	//generaMatrice(matrice_pc);
 	switch(leggiDalFile(matrice_pc))
 	{
 		case 0:
@@ -172,19 +203,23 @@ int main()
 			break;
 		case -1:
 			cout<<"Si e' verificato un errore nell'apertura del file."<<endl;
-			print = false;
+			avanza = false;
 			break;
 		case -2:
 			cout<<"Il numero di dati presenti sul file non e' sufficiente a riempire la plancia di gioco."<<endl;
-			print = false;
+			avanza = false;
 			break;
 	}
-	if (print)stampaMatrice(matrice_pc); // La matrice viene stampata solamente se la lettura è eseguita correttamente.
-	chiediColpi(colpi);	// Funzione d'inserimento delle coordinate dei colpi da parte dell'utente.
-	colpi.stampaCoda();	// Metodo di test: stampa della coda dei colpi.
-	estraiColpi(colpi, contaNavi, matrice_pc);	// Funzione d'estrazione dei colpi dalla coda.
-	stampaEsito(contaNavi);	// Stampa delle navi affondate.
-	return 0;
+	if (avanza)
+	{
+		stampaMatrice(matrice_pc); // Funzione di stampa della plancia di gioco.
+		
+		chiediColpi(colpi);	// Funzione d'inserimento delle coordinate dei colpi da parte dell'utente.
+		colpi.stampaCoda();	// Metodo di test: stampa della coda dei colpi.
+		estraiColpi(colpi, contaNavi, matrice_pc);	// Funzione d'estrazione dei colpi dalla coda.
+		stampaEsito(contaNavi);	// Stampa delle navi affondate.
+		return 0;
+	}
 }
 
 

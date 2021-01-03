@@ -20,6 +20,17 @@ using namespace std;
 La funzione ritorna -1 se il file non è stato aperto correttamente, ritorna -2 se i dati sul file non sono
 sufficienti e ritorna 0 se invece tutto è andato a buon fine.
 */
+struct recCoordinate
+{
+	unsigned int riga;
+	unsigned int colonna;	
+};
+struct recNave
+{
+	unsigned int n_elementi;
+	recCoordinate coordinate_nave[dim_navi];
+};
+
 int leggiDalFile(unsigned int m[][n_elementi])
 {
 	ifstream fileCampo("campoBattaglia.txt");
@@ -40,6 +51,7 @@ int leggiDalFile(unsigned int m[][n_elementi])
 	fileCampo.close();
 	return 0;
 }
+/*
 void generaMatrice(unsigned int m[][n_elementi])
 {
 	unsigned int col{0}, row{0}, dim_nave{0};
@@ -68,7 +80,7 @@ void generaMatrice(unsigned int m[][n_elementi])
 		else
 			orientamento = true;
 	}
-}
+}*/
 void stampaMatrice(unsigned int m[][n_elementi])
 {
 	cout<<"o---o---o---o---o---o---o"<<endl;
@@ -89,7 +101,6 @@ void stampaMatrice(unsigned int m[][n_elementi])
 			cout<<i + 1<<"  # "; // Stampa degli indici di riga.
 		else
 			cout<<i + 1<<" # ";
-		
 		for (int j = 0; j < n_elementi; j++)
 		{
 			cout<<m[i][j]<<" "; // Stampa della matrice.
@@ -188,11 +199,57 @@ void stampaEsito(unsigned int counter[]) // Funzione di stampa delle navi affond
 			cout<<"Peccato, nessuna nave e' stata affondata."<<endl;
 	cout<<"o---o Developed by Bonometti Francesco Pio & Compri Filippo o---o"<<endl;
 }
-
+unsigned int numeriNavi(unsigned int m[][n_elementi], unsigned int counter[])	// Calcolo del numero di navi in base ai diversi tipi.
+{
+	unsigned int somma{0};
+	for (int i = 0; i < n_elementi; i++)
+	{
+		for (int j = 0; j < n_elementi; j++)
+		{
+			if (m[i][j] != 0)
+			{
+				counter[m[i][j] - 1]++;
+			}
+		}
+	}
+	for (int i = 0; i < dim_navi; i++)
+	{
+		counter[i] /= (i + 1);
+		somma+=counter[i];
+	}
+	return somma;
+}
+/*void coordinateNavi(unsigned int m[][n_elementi], recNave c[], unsigned int num_tot)
+{
+	unsigned int k{0};
+	for (int i = 0; i < n_elementi; i++)
+	{
+		for (int j = 0; j < n_elementi; j++)
+		{
+			if (m[i][j] != 0)
+			{
+				k = 0;
+				if (m[i][j] == 1)
+				{
+					c[m[i][j] - 1].n_elementi = 1;
+					c[m[i][j] - 1].coordinate_nave[k].riga = i;
+					c[m[i][j] - 1].coordinate_nave[k].colonna = j;
+				}
+				else
+				{
+					controlloAdiacenti(m, k, i, j, c);
+				}
+			}	
+		}	
+	}	
+}*/
 int main()
 {
 	unsigned int matrice_pc[n_elementi][n_elementi] = {{0}}, contaNavi[n_navi] = {0};
-	bool avanza{true};	// Variabile booleana per determinare l'avanzamento o meno nel programma, in presenza di numero insufficiente di dati.
+	unsigned int navi[dim_navi] = {0};
+	unsigned int navi_totali{0};
+	//recNave coordsNavi[100]; // Coordinate navi. 
+	bool avanza{true}; // Variabile booleana per determinare l'avanzamento o meno nel programma, in presenza di numero insufficiente di dati.
 	Colpo colpi(n_elementi * n_elementi);
 	srand(time(NULL));
 	//generaMatrice(matrice_pc);
@@ -213,7 +270,8 @@ int main()
 	if (avanza)
 	{
 		stampaMatrice(matrice_pc); // Funzione di stampa della plancia di gioco.
-		
+		navi_totali = numeriNavi(matrice_pc, navi);
+		//coordinateNavi(matrice_pc, coordsNavi, navi_totali);
 		chiediColpi(colpi);	// Funzione d'inserimento delle coordinate dei colpi da parte dell'utente.
 		colpi.stampaCoda();	// Metodo di test: stampa della coda dei colpi.
 		estraiColpi(colpi, contaNavi, matrice_pc);	// Funzione d'estrazione dei colpi dalla coda.

@@ -7,7 +7,6 @@ struct recColpo
 	int indiceRiga;
 	int indiceColonna;
 };
-
 class Colpo
 {
 	private:
@@ -22,7 +21,6 @@ class Colpo
 		~Colpo();
 		void push(recColpo hit);
 		recColpo pop();
-		void stampaCoda();
 		unsigned int getLunghezza();
 };
 
@@ -81,15 +79,4 @@ recColpo Colpo::pop()
 unsigned int Colpo::getLunghezza()
 {
 	return lunghezza;
-}
-// Metodo di test, da eliminare.
-void Colpo::stampaCoda()
-{
-	cout<<"Coordinate dei colpi: "<<endl;
-	for (int i = 0; i < lunghezza; i++)
-	{
-		cout<<" Colpo numero "<<i + 1<<":"<<endl;
-		cout<<"  Indice riga: "<<colpi[i].indiceRiga<<endl;
-		cout<<"  Indice colonna: "<<colpi[i].indiceColonna<<endl;
-	}
 }

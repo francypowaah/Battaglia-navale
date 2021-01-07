@@ -21,7 +21,7 @@ struct recNave
 	bool trovati[dim_navi] = {false};
 };
 
-#include <vector> // Vettori (array con lunghezza variabile dichiarata a run-time).
+#include <vector> // Vettori (array con lunghezza variabile a run-time).
 using namespace std;
 
 vector <recNave> v_coordinate(0);
@@ -52,6 +52,7 @@ int main()
 		sort(v_coordinate.begin(), v_coordinate.end(), compara_navi); // Sort utilizzando la funzione compara_navi.
 		estraiColpi(colpi, matrice_pc);	// Funzione d'estrazione dei colpi dalla coda.
 		stampaEsito(); // Stampa delle navi affondate.*/
+		stampaPunteggio();
 		return 0;
 	}
 }
